@@ -38,13 +38,14 @@ public class AssProcessor {
 
     private CompletableFuture<double[][]> calculateY1(
             CompletableFuture<double[][]> A,
-            CompletableFuture<double[][]> b)
+            CompletableFuture<double[][]> b,
+            IMatrixOperationsService service)
     {
         return CompletableFuture.allOf(A, b)
                 .thenApplyAsync(ignored -> {
                     try {
-                        System.out.println("Thread for 'y1': " + Thread.currentThread().getName());
-                        return clientMatrixService.calculateY1(A.join(), b.join());
+                        System.out.println("[calculateY1] Thread for 'y1': " + Thread.currentThread().getName());
+                        return service.calculateY1(A.join(), b.join());
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -54,13 +55,14 @@ public class AssProcessor {
     private CompletableFuture<double[][]> calculateY2(
             CompletableFuture<double[][]> A1,
             CompletableFuture<double[][]> b1,
-            CompletableFuture<double[][]> c1)
+            CompletableFuture<double[][]> c1,
+            IMatrixOperationsService service)
     {
         return CompletableFuture.allOf(A1, b1, c1)
                 .thenApplyAsync(ignored -> {
                     try {
-                        System.out.println("Thread for 'y2': " + Thread.currentThread().getName());
-                        return serverMatrixService.calculateY2(A1.join(), b1.join(), c1.join());
+                        System.out.println("[calculateY2] Thread for 'y2': " + Thread.currentThread().getName());
+                        return service.calculateY2(A1.join(), b1.join(), c1.join());
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -70,13 +72,14 @@ public class AssProcessor {
     private CompletableFuture<double[][]> calculateY3(
             CompletableFuture<double[][]> A2,
             CompletableFuture<double[][]> B2,
-            CompletableFuture<double[][]> C2)
+            CompletableFuture<double[][]> C2,
+            IMatrixOperationsService service)
     {
         return CompletableFuture.allOf(A2, B2, C2)
                 .thenApplyAsync(ignored -> {
                     try {
-                        System.out.println("Thread for 'y3': " + Thread.currentThread().getName());
-                        return clientMatrixService.calculateY3(A2.join(), B2.join(), C2.join());
+                        System.out.println("[calculateY3] Thread for 'y3': " + Thread.currentThread().getName());
+                        return service.calculateY3(A2.join(), B2.join(), C2.join());
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -87,21 +90,21 @@ public class AssProcessor {
         CompletableFuture<double[][]> AFuture = createMatrixAsync(clientFactory, false);
         CompletableFuture<double[][]> bFuture = createMatrixAsync(serverFactory, true);
 
-        CompletableFuture<double[][]> y1Future = calculateY1(AFuture, bFuture);
+        CompletableFuture<double[][]> y1Future = calculateY1(AFuture, bFuture, serverMatrixService);
 
         CompletableFuture<double[][]> b1Future = createMatrixAsync(serverFactory, true);
         CompletableFuture<double[][]> c1Future = createMatrixAsync(serverFactory, true);
         CompletableFuture<double[][]> A1Future = createMatrixAsync(clientFactory, false);
 
-        CompletableFuture<double[][]> y2Future = calculateY2(A1Future, b1Future, c1Future);
+        CompletableFuture<double[][]> y2Future = calculateY2(A1Future, b1Future, c1Future, serverMatrixService);
 
         CompletableFuture<double[][]> A2Future = createMatrixAsync(clientFactory, false);
         CompletableFuture<double[][]> B2Future = createMatrixAsync(clientFactory, false);
         CompletableFuture<double[][]> C2Future = createMatrixAsync(clientFactory, false);
 
-        CompletableFuture<double[][]> y3Future = calculateY3(A2Future, B2Future, C2Future);
+        CompletableFuture<double[][]> y3Future = calculateY3(A2Future, B2Future, C2Future, clientMatrixService);
 
-        System.out.println("Thread for 'x': " + Thread.currentThread().getName());
+        System.out.println("[execute] Thread for 'x': " + Thread.currentThread().getName());
 
         CompletableFuture.allOf(y1Future, y2Future, y3Future);
 
@@ -110,7 +113,10 @@ public class AssProcessor {
         return x;
     }
 
-    private double[][] calculateX(double[][] y1, double[][] y2, double[][] y3) throws ExecutionException, InterruptedException {
+    private double[][] calculateX(
+            double[][] y1,
+            double[][] y2,
+            double[][] y3) throws ExecutionException, InterruptedException {
         CompletableFuture<double[][]> y1Transpose = transposeMatrixAsync(serverMatrixService, y1);
         CompletableFuture<double[][]> y2Transpose = transposeMatrixAsync(serverMatrixService, y2);
 

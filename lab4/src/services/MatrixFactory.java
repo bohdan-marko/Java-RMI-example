@@ -22,13 +22,13 @@ public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory
 
     @Override
     public double[][] createRandomMatrix() {
-        System.out.println("Creating random matrix. Device: " + deviceName);
+        System.out.println("Creating random matrix.\tDevice: " + deviceName);
         return createRandomMatrix(n, n);
     }
 
     @Override
     public double[][] createRandomVector() {
-        System.out.println("Creating random vector. Device: " + deviceName);
+        System.out.println("Creating random vector.\tDevice: " + deviceName);
         return createRandomMatrix(n, 1);
     }
 
@@ -44,7 +44,7 @@ public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory
 
     @Override
     public double[][] createVectorB() {
-        System.out.println("Creating vector B. Device: " + deviceName);
+        System.out.println("Creating vector B.\tDevice: " + deviceName);
         var b = new double[n][1];
         for (int i = 0; i < n; i++) {
             if (i % 2 == 0)
@@ -57,7 +57,7 @@ public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory
 
     @Override
     public double[][] createMatrixC() {
-        System.out.println("Creating matrix C. Device: " + deviceName);
+        System.out.println("Creating matrix C.\tDevice: " + deviceName);
         var C = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
