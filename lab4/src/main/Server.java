@@ -12,6 +12,7 @@ public class Server {
             var serverFactory = new MatrixFactory(GlobalHelper.N, GlobalHelper.random);
             var serverMatrixService = new MatrixOperationsService();
 
+            System.setProperty("java.rmi.server.hostname", "192.168.0.103");
             Registry registry = LocateRegistry.createRegistry(1099);
 
             registry.rebind("factory", serverFactory);
