@@ -2,14 +2,16 @@ package services;
 import services.interfaces.IMatrixFactory;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 
-public class MatrixFactory implements IMatrixFactory {
+public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory {
 
     private int n;
     private Random random;
 
     public MatrixFactory(int n, Random random) throws RemoteException {
+        super();
         this.n = n;
         this.random = random;
     }

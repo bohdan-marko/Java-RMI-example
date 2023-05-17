@@ -34,7 +34,7 @@ public class AwesomeProcessor {
         });
         CompletableFuture<double[][]> bFuture = CompletableFuture.supplyAsync(() -> {
             try {
-                return serverFactory.createVectorB();
+                return clientFactory.createVectorB();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -52,7 +52,7 @@ public class AwesomeProcessor {
 
         CompletableFuture<double[][]> b1Future = CompletableFuture.supplyAsync(() -> {
             try {
-                return serverFactory.createRandomVector();
+                return clientFactory.createRandomVector();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -84,7 +84,7 @@ public class AwesomeProcessor {
 
         CompletableFuture<double[][]> A2Future = CompletableFuture.supplyAsync(() -> {
             try {
-                return serverFactory.createRandomMatrix();
+                return clientFactory.createRandomMatrix();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -98,7 +98,7 @@ public class AwesomeProcessor {
         });
         CompletableFuture<double[][]> C2Future = CompletableFuture.supplyAsync(() -> {
             try {
-                return serverFactory.createMatrixC();
+                return clientFactory.createMatrixC();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }

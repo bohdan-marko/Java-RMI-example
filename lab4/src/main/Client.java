@@ -14,7 +14,7 @@ import java.util.Random;
 public class Client {
     public static void main(String[] args) {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+            Registry registry = LocateRegistry.getRegistry("192.168.0.103", 1099);
             var startTime = System.currentTimeMillis();
 
             var serverFactory = (IMatrixFactory)registry.lookup("factory");
