@@ -1,16 +1,16 @@
 package services;
 
-import services.interfaces.IMatrixOperationsService;
+import services.interfaces.IMatrixService;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class MatrixOperationsService extends UnicastRemoteObject implements IMatrixOperationsService {
+public class MatrixService extends UnicastRemoteObject implements IMatrixService {
 
     private String deviceName;
 
-    public MatrixOperationsService() throws RemoteException, UnknownHostException {
+    public MatrixService() throws RemoteException, UnknownHostException {
         super();
         this.deviceName = InetAddress.getLocalHost().getHostName();
     }

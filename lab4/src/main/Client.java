@@ -2,9 +2,9 @@ package main;
 
 import services.AverageProcessorEnjoyer;
 import services.MatrixFactory;
-import services.MatrixOperationsService;
+import services.MatrixService;
 import services.interfaces.IMatrixFactory;
-import services.interfaces.IMatrixOperationsService;
+import services.interfaces.IMatrixService;
 import utils.GlobalHelper;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -16,10 +16,10 @@ public class Client {
             var startTime = System.currentTimeMillis();
 
             var serverFactory = (IMatrixFactory)registry.lookup("factory");
-            var serverMatrixService = (IMatrixOperationsService)registry.lookup("matrixService");
+            var serverMatrixService = (IMatrixService)registry.lookup("matrixService");
 
             var clientFactory = new MatrixFactory(GlobalHelper.N, GlobalHelper.random);
-            var clientMatrixService = new MatrixOperationsService();
+            var clientMatrixService = new MatrixService();
 
             var processor = new AverageProcessorEnjoyer(
                     serverMatrixService,

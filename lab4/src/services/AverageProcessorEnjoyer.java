@@ -1,21 +1,21 @@
 package services;
 
 import services.interfaces.IMatrixFactory;
-import services.interfaces.IMatrixOperationsService;
+import services.interfaces.IMatrixService;
 import java.rmi.RemoteException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class AverageProcessorEnjoyer {
 
-    private IMatrixOperationsService serverMatrixService;
-    private IMatrixOperationsService clientMatrixService;
+    private IMatrixService serverMatrixService;
+    private IMatrixService clientMatrixService;
     private final IMatrixFactory serverFactory;
     private final IMatrixFactory clientFactory;
 
     public AverageProcessorEnjoyer(
-            IMatrixOperationsService serverMatrixService,
-            IMatrixOperationsService clientMatrixService,
+            IMatrixService serverMatrixService,
+            IMatrixService clientMatrixService,
             IMatrixFactory serverFactory,
             IMatrixFactory clientFactory) {
         this.serverMatrixService = serverMatrixService;
@@ -39,7 +39,7 @@ public class AverageProcessorEnjoyer {
     private CompletableFuture<double[][]> calculateY1(
             CompletableFuture<double[][]> A,
             CompletableFuture<double[][]> b,
-            IMatrixOperationsService service)
+            IMatrixService service)
     {
         return CompletableFuture.allOf(A, b)
                 .thenApplyAsync(ignored -> {
@@ -56,7 +56,7 @@ public class AverageProcessorEnjoyer {
             CompletableFuture<double[][]> A1,
             CompletableFuture<double[][]> b1,
             CompletableFuture<double[][]> c1,
-            IMatrixOperationsService service)
+            IMatrixService service)
     {
         return CompletableFuture.allOf(A1, b1, c1)
                 .thenApplyAsync(ignored -> {
@@ -73,7 +73,7 @@ public class AverageProcessorEnjoyer {
             CompletableFuture<double[][]> A2,
             CompletableFuture<double[][]> B2,
             CompletableFuture<double[][]> C2,
-            IMatrixOperationsService service)
+            IMatrixService service)
     {
         return CompletableFuture.allOf(A2, B2, C2)
                 .thenApplyAsync(ignored -> {
@@ -87,14 +87,14 @@ public class AverageProcessorEnjoyer {
     }
 
     public double[][] execute() throws ExecutionException, InterruptedException {
-        CompletableFuture<double[][]> AFuture = createMatrixAsync(clientFactory, false);
+        CompletableFuture<double[][]> AFuture = createMatrixAsync(serverFactory, false);
         CompletableFuture<double[][]> bFuture = createMatrixAsync(serverFactory, true);
 
         CompletableFuture<double[][]> y1Future = calculateY1(AFuture, bFuture, serverMatrixService);
 
         CompletableFuture<double[][]> b1Future = createMatrixAsync(serverFactory, true);
         CompletableFuture<double[][]> c1Future = createMatrixAsync(serverFactory, true);
-        CompletableFuture<double[][]> A1Future = createMatrixAsync(clientFactory, false);
+        CompletableFuture<double[][]> A1Future = createMatrixAsync(serverFactory, false);
 
         CompletableFuture<double[][]> y2Future = calculateY2(A1Future, b1Future, c1Future, serverMatrixService);
 
@@ -134,7 +134,7 @@ public class AverageProcessorEnjoyer {
     }
 
     private CompletableFuture<double[][]> transposeMatrixAsync(
-            IMatrixOperationsService service,
+            IMatrixService service,
             double[][] matrix) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -150,7 +150,7 @@ public class AverageProcessorEnjoyer {
             double[][] y2,
             double[][] y3,
             CompletableFuture<double[][]> y1Transpose,
-            IMatrixOperationsService service) {
+            IMatrixService service) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 System.out.println("[calculateX] Thread for operation1: " + Thread.currentThread().getName());
@@ -168,7 +168,7 @@ public class AverageProcessorEnjoyer {
     private CompletableFuture<double[][]> calculateOperation2(
             double[][] y1,
             CompletableFuture<double[][]> y2Transpose,
-            IMatrixOperationsService service) {
+            IMatrixService service) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 System.out.println("[calculateX] Thread for operation2: " + Thread.currentThread().getName());
@@ -183,7 +183,7 @@ public class AverageProcessorEnjoyer {
             CompletableFuture<double[][]> operation1,
             CompletableFuture<double[][]> operation2,
             double[][] y2,
-            IMatrixOperationsService service) {
+            IMatrixService service) {
         return CompletableFuture.allOf(operation1, operation2)
                 .thenApplyAsync(ignored -> {
                     try {

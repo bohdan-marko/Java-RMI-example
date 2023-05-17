@@ -3,7 +3,7 @@ package services.interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IMatrixOperationsService extends Remote {
+public interface IMatrixService extends Remote {
     double[][] multiply(double[][] matrix1, double[][] matrix2) throws RemoteException;
 
     double[][] add(double[][] matrix1, double[][] matrix2) throws RemoteException;
