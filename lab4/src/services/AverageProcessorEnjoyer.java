@@ -6,14 +6,14 @@ import java.rmi.RemoteException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class AssProcessor {
+public class AverageProcessorEnjoyer {
 
     private IMatrixOperationsService serverMatrixService;
     private IMatrixOperationsService clientMatrixService;
     private final IMatrixFactory serverFactory;
     private final IMatrixFactory clientFactory;
 
-    public AssProcessor(
+    public AverageProcessorEnjoyer(
             IMatrixOperationsService serverMatrixService,
             IMatrixOperationsService clientMatrixService,
             IMatrixFactory serverFactory,

@@ -1,6 +1,6 @@
 package main;
 
-import services.AssProcessor;
+import services.AverageProcessorEnjoyer;
 import services.MatrixFactory;
 import services.MatrixOperationsService;
 import services.interfaces.IMatrixFactory;
@@ -21,7 +21,7 @@ public class Client {
             var clientFactory = new MatrixFactory(GlobalHelper.N, GlobalHelper.random);
             var clientMatrixService = new MatrixOperationsService();
 
-            var processor = new AssProcessor(
+            var processor = new AverageProcessorEnjoyer(
                     serverMatrixService,
                     clientMatrixService,
                     serverFactory,
