@@ -1,20 +1,23 @@
 package services;
 
 import services.interfaces.IMatrixOperationsService;
-
-import java.rmi.Remote;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class MatrixOperationsService extends UnicastRemoteObject implements IMatrixOperationsService {
 
-    public MatrixOperationsService() throws RemoteException {
+    private String deviceName;
+
+    public MatrixOperationsService() throws RemoteException, UnknownHostException {
         super();
+        this.deviceName = InetAddress.getLocalHost().getHostName();
     }
 
     @Override
     public double[][] multiply(double[][] matrix1, double[][] matrix2) {
-        System.out.println("Multiply matrices");
+        System.out.println("Multiply matrices. Device: " + deviceName);
         int m1rows = matrix1.length;
         int m1cols = matrix1[0].length;
 
@@ -41,7 +44,7 @@ public class MatrixOperationsService extends UnicastRemoteObject implements IMat
 
     @Override
     public double[][] add(double[][] matrix1, double[][] matrix2) {
-        System.out.println("Add matrices");
+        System.out.println("Add matrices. Device: " + deviceName);
         int numRows = matrix1.length;
         int numCols = matrix1[0].length;
 
@@ -61,7 +64,7 @@ public class MatrixOperationsService extends UnicastRemoteObject implements IMat
 
     @Override
     public double[][] subtraction(double[][] matrix1, double[][] matrix2) {
-        System.out.println("Subtract matrices");
+        System.out.println("Subtract matrices. Device: " + deviceName);
         int numRows = matrix1.length;
         int numCols = matrix1[0].length;
 
@@ -81,7 +84,7 @@ public class MatrixOperationsService extends UnicastRemoteObject implements IMat
 
     @Override
     public double[][] multiply(double[][] matrix, double number) {
-        System.out.println("Multiply matrix by a number");
+        System.out.println("Multiply matrix by a number. Device: " + deviceName);
         int numRows = matrix.length;
         int numCols = matrix[0].length;
 
@@ -98,7 +101,7 @@ public class MatrixOperationsService extends UnicastRemoteObject implements IMat
 
     @Override
     public double[][] transpose(double[][] matrix) {
-        System.out.println("Transpose matrix");
+        System.out.println("Transpose matrix. Device: " + deviceName);
         int numRows = matrix.length;
         int numCols = matrix[0].length;
 
@@ -114,19 +117,19 @@ public class MatrixOperationsService extends UnicastRemoteObject implements IMat
 
     @Override
     public double[][] calculateY1(double[][] A, double[][] b) {
-        System.out.println("Calculate 'Y1'");
+        System.out.println("Calculate Y1. Device: " + deviceName);
         return multiply(A, b);
     }
 
     @Override
     public double[][] calculateY2(double[][] A1, double[][] b1, double[][] c1) {
-        System.out.println("Calculate 'Y2'");
+        System.out.println("Calculate Y2. Device: " + deviceName);
         return multiply(A1, subtraction(multiply(b1, 12), c1));
     }
 
     @Override
     public double[][] calculateY3(double[][] A2, double[][] B2, double[][] C2) {
-        System.out.println("Calculate 'Y3'");
+        System.out.println("Calculate Y3. Device: " + deviceName);
         return multiply(A2, subtraction(B2, C2));
     }
 

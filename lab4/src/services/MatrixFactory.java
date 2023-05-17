@@ -1,6 +1,8 @@
 package services;
+
 import services.interfaces.IMatrixFactory;
-import java.rmi.Remote;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
@@ -9,22 +11,24 @@ public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory
 
     private int n;
     private Random random;
+    private String deviceName;
 
-    public MatrixFactory(int n, Random random) throws RemoteException {
+    public MatrixFactory(int n, Random random) throws RemoteException, UnknownHostException {
         super();
         this.n = n;
         this.random = random;
+        this.deviceName = InetAddress.getLocalHost().getHostName();
     }
 
     @Override
     public double[][] createRandomMatrix() {
-        System.out.println("Execute createRandomMatrix method");
+        System.out.println("Creating random matrix. Device: " + deviceName);
         return createRandomMatrix(n, n);
     }
 
     @Override
     public double[][] createRandomVector() {
-        System.out.println("Execute createRandomVector method");
+        System.out.println("Creating random vector. Device: " + deviceName);
         return createRandomMatrix(n, 1);
     }
 
@@ -40,7 +44,7 @@ public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory
 
     @Override
     public double[][] createVectorB() {
-        System.out.println("Execute createVectorB method");
+        System.out.println("Creating vector B. Device: " + deviceName);
         var b = new double[n][1];
         for (int i = 0; i < n; i++) {
             if (i % 2 == 0)
@@ -53,7 +57,7 @@ public class MatrixFactory extends UnicastRemoteObject implements IMatrixFactory
 
     @Override
     public double[][] createMatrixC() {
-        System.out.println("Execute createMatrixC method");
+        System.out.println("Creating matrix C. Device: " + deviceName);
         var C = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {

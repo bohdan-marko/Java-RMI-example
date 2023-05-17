@@ -3,11 +3,8 @@ package main;
 import services.MatrixFactory;
 import services.MatrixOperationsService;
 import utils.GlobalHelper;
-
-import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Random;
 
 public class Server {
     public static void main(String[] args) {

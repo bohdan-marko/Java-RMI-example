@@ -1,25 +1,25 @@
 package services;
+
 import services.interfaces.IMatrixFactory;
 import services.interfaces.IMatrixOperationsService;
-
 import java.rmi.RemoteException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class AwesomeProcessor {
 
-    private IMatrixOperationsService serverMatrixOperationsService;
-    private IMatrixOperationsService clientMatrixOperationsService;
+    private IMatrixOperationsService serverMatrixService;
+    private IMatrixOperationsService clientMatrixService;
     private final IMatrixFactory serverFactory;
     private final IMatrixFactory clientFactory;
 
     public AwesomeProcessor(
-            IMatrixOperationsService serverMatrixOperationsService,
-            IMatrixOperationsService clientMatrixOperationsService,
+            IMatrixOperationsService serverMatrixService,
+            IMatrixOperationsService clientMatrixService,
             IMatrixFactory serverFactory,
             IMatrixFactory clientFactory) {
-        this.serverMatrixOperationsService = serverMatrixOperationsService;
-        this.clientMatrixOperationsService = clientMatrixOperationsService;
+        this.serverMatrixService = serverMatrixService;
+        this.clientMatrixService = clientMatrixService;
         this.serverFactory = serverFactory;
         this.clientFactory = clientFactory;
     }
@@ -44,7 +44,7 @@ public class AwesomeProcessor {
                 .thenApplyAsync(ignored -> {
                     System.out.println("Thread for 'y1': " + Thread.currentThread().getName());
                     try {
-                        return clientMatrixOperationsService.calculateY1(AFuture.join(), bFuture.join());
+                        return clientMatrixService.calculateY1(AFuture.join(), bFuture.join());
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -76,7 +76,7 @@ public class AwesomeProcessor {
                 .thenApplyAsync(ignored -> {
                     System.out.println("Thread for 'y2': " + Thread.currentThread().getName());
                     try {
-                        return serverMatrixOperationsService.calculateY2(A1Future.join(), b1Future.join(), c1Future.join());
+                        return serverMatrixService.calculateY2(A1Future.join(), b1Future.join(), c1Future.join());
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -108,7 +108,7 @@ public class AwesomeProcessor {
                 .thenApplyAsync(ignored -> {
                     System.out.println("Thread for 'y3': " + Thread.currentThread().getName());
                     try {
-                        return clientMatrixOperationsService.calculateY3(A2Future.join(), B2Future.join(), C2Future.join());
+                        return clientMatrixService.calculateY3(A2Future.join(), B2Future.join(), C2Future.join());
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -127,14 +127,14 @@ public class AwesomeProcessor {
             throws ExecutionException, InterruptedException {
         var y1Transpose = CompletableFuture.supplyAsync(()-> {
             try {
-                return serverMatrixOperationsService.transpose(y1);
+                return serverMatrixService.transpose(y1);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
         });
         var y2Transpose = CompletableFuture.supplyAsync(()-> {
             try {
-                return clientMatrixOperationsService.transpose(y2);
+                return clientMatrixService.transpose(y2);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -143,11 +143,11 @@ public class AwesomeProcessor {
         var operation1 = CompletableFuture.supplyAsync(() -> {
             try{
                 System.out.println("calculateX operation1 thread: " + Thread.currentThread().getName());
-                var one = serverMatrixOperationsService.multiply(y3, y3);
-                var two = serverMatrixOperationsService.multiply(one, y1);
-                var three = serverMatrixOperationsService.add(two, y2);
-                var four = serverMatrixOperationsService.multiply(y1Transpose.get(), three);
-                return serverMatrixOperationsService.multiply(y3, four[0][0]);
+                var one = serverMatrixService.multiply(y3, y3);
+                var two = serverMatrixService.multiply(one, y1);
+                var three = serverMatrixService.add(two, y2);
+                var four = serverMatrixService.multiply(y1Transpose.get(), three);
+                return serverMatrixService.multiply(y3, four[0][0]);
             } catch (InterruptedException | ExecutionException | RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -156,7 +156,7 @@ public class AwesomeProcessor {
         var operation2 = CompletableFuture.supplyAsync(() -> {
             try{
                 System.out.println("calculateX operation2 thread: " + Thread.currentThread().getName());
-                return clientMatrixOperationsService.multiply(y1, y2Transpose.get());
+                return clientMatrixService.multiply(y1, y2Transpose.get());
             } catch (InterruptedException | ExecutionException | RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -166,9 +166,9 @@ public class AwesomeProcessor {
                 .supplyAsync(() -> {
                     try {
                         System.out.println("calculateX operation3 thread: " + Thread.currentThread().getName());
-                        var one = serverMatrixOperationsService.add(operation1.join(), operation2.join());
-                        var two = serverMatrixOperationsService.multiply(one, y2);
-                        return serverMatrixOperationsService.transpose(two);
+                        var one = serverMatrixService.add(operation1.join(), operation2.join());
+                        var two = serverMatrixService.multiply(one, y2);
+                        return serverMatrixService.transpose(two);
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -177,7 +177,7 @@ public class AwesomeProcessor {
         System.out.println("calculateX main thread: " + Thread.currentThread().getName());
 
         try {
-            return clientMatrixOperationsService.add(y2Transpose.get(), operation3.get());
+            return clientMatrixService.add(y2Transpose.get(), operation3.get());
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
