@@ -11,16 +11,11 @@ public class HelloService extends UnicastRemoteObject implements HelloInterface 
     }
 
     public String sayHello() throws RemoteException {
-        InetAddress ip = null;
-        InetAddress name = null;
         try {
-            ip = InetAddress.getLocalHost();
-            name = InetAddress.getLocalHost();
+            System.out.println("Current device name is: " + InetAddress.getLocalHost());
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Current IP address is: " + ip);
-        System.out.println("Current device name is: " + name);
         return message;
     }
 }

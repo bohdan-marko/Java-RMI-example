@@ -1,3 +1,4 @@
+import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -5,6 +6,10 @@ public class Server {
 
     public Server() {
         try {
+            InetAddress ip = InetAddress.getLocalHost();
+            System.out.println("Server IP address: " + ip.getHostAddress());
+
+            System.setProperty("java.rmi.server.hostname", ip.getHostAddress());
             HelloService obj = new HelloService("Hello from Server");
 
             // створити реєстр на порту 1099
